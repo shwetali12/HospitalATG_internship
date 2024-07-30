@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+
+<div class="container mt-5">
+    <form id="myform" action="" method="POST">
+        {% csrf_token %}
+      
+        {{ form.as_p}}
+      
+        
+       
+        <button class="btn btn-primary" type="submit">Sign up</button>
+       
+    </form> 
+</div>
+{% endblock body %}
+
+        
+        
