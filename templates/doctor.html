@@ -3,7 +3,7 @@
 {% block body %}
 
 <div class="container">
-    <h1>hello {{user.username}} welcome to doctor page</h1>
+    <!--<h1>hello {{user.username}} welcome to doctor page</h1>
     <p>first_name :{{user.first_name}}</p> 
      <p>Last name  :{{ user.last_name }}</p>
     <p>profile_picture  : {{user.profile_picture}}
@@ -13,7 +13,52 @@
     <p>State: {{user.state}} </p>
     <p>Pincode:{{ user.pincode}}</p>
     <p>Is Doctor: {{user.is_doctor}}</p>
-    <p>Is patient: {{user.is_patient}} </p>
+    <p>Is patient: {{user.is_patient}} </p>-->
+
+    <h1>welcome Doctor {{user.username}}</h1>
+    <h1>Blog Posts</h1>
+
+   
+    
+    <table class="table table-bordered table-striped mt-3">
+      <thead>
+          <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Summary</th>
+              <th>Content</th>
+              <th>is_draft</th>
+              <th>Image</th>
+              <th></th>
+              <th></th>
+          </tr>
+      </thead>
+  <tbody>
+    {% for i in bpost %}
+          <tr>
+              <td> {{i.Title}} </td>
+              <td>{{ i.Category}}</td>
+
+              <td>{{ i.Summary|truncatewords:15 }}{% if i.Summary|length > 15 %}...{% endif %}</td>
+              <td>{{ i.Content}}</td>
+              <td>{{i.is_draft}}</td>
+              <td> {% if i.Image %}
+                <img src="{{ i.Image.url }}" alt="{{ i.title }}" width="50" height="50"> 
+              {% endif %}   </td>
+              {% if i.is_draft %}
+              <td><a type="submit" class="btn btn-primary" href="{% url 'edit' i.id %}">Edit</a></td>
+              <td><a type="submit" class="btn btn-danger" href="{% url 'delete' i.id %}">Remove</a></td>
+              {% else %}
+              <td></td>
+              <td></td>
+              {% endif %}
+
+
+          </tr>
+     {% endfor %}
+      </tbody>
+  </table>
+   
 
 </div>
 {% endblock body%}

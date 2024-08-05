@@ -1,8 +1,12 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SignupForm, LoginForm
-from .models import User
+from django.contrib.auth.decorators import login_required
+
+from .forms import SignupForm, LoginForm, BlogPostForm,CategoryForm
+from .models import User ,BlogPost,Category
+from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
 
 
 
@@ -52,10 +56,78 @@ def login_view(request):
 def index(request):
     return render(request, 'index.html')
 
-def doctor(request):
-    return render(request, 'doctor.html')
-
-def patient(request):
-    return render(request, 'patient.html')
-
 # Registration view
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            blog_post = form.save(commit=False)
+            blog_post.doctor = request.user
+            blog_post.save()  # Save the new employee to the database
+            print(blog_post.Title)
+            return redirect('doctor')  # Redirect to a page that lists employees
+
+        else:
+            print(form.errors)
+    else:
+        form = BlogPostForm()
+
+    return render(request, 'create_post.html',{'form': form})
+
+
+@login_required
+def doctor(request):
+    bpost = BlogPost.objects.all()
+    return render(request, 'doctor.html' ,{'bpost':bpost})
+
+
+@login_required
+def patient(request):
+    categories = Category.objects.all()
+    cat_post = {}
+    
+    for category in categories:
+        posts = BlogPost.objects.filter(Category=category)
+        cat_post[category] = posts
+    return render(request, 'patient.html',{'cat_post':cat_post})
+
+def logout_view(request):
+    logout(request)
+    return redirect('/index') 
+
+def delete(request,id):
+    post = BlogPost.objects.get(id=id)
+    post.delete()
+    return redirect('doctor')
+
+
+def edit(request,id):
+    blog = get_object_or_404(BlogPost, id=id)
+
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, instance=blog)
+        if form.is_valid():
+            form.save()  # Save the updated employee information
+            return redirect('doctor')  # Redirect to the list of employees
+
+    else:
+        form = BlogPostForm(instance=blog)
+
+    return render(request, 'edit.html', {'form': form, 'blog': blog})
+
+def create_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            
+            form.save()  # Save the new employee to the database
+            return redirect('doctor')  # Redirect to a page that lists employees
+
+        else:
+            print(form.errors)
+    else:
+        form = CategoryForm()
+
+    return render(request, 'create_category.html',{'form': form})
+

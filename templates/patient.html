@@ -3,7 +3,7 @@
 {% block body %}
 
 <div class="container">
-    <h1>hello {{user.username}} welcome to patient page</h1>
+  <!--  <h1>hello {{user.username}} welcome to patient page</h1>
     <p>first_name :{{user.first_name}}</p> 
      <p>Last name:{{ user.last_name }}</p>
     <p>profile_picture: {{user.profile_picture}}
@@ -13,7 +13,39 @@
     <p>State: {{user.state}} </p>
     <p>Pincode:{{ user.pincode}}</p>
     <p>Is Doctor: {{user.is_doctor}}</p>
-    <p>Is patient: {{user.is_patient}} </p>
- 
+    <p>Is patient: {{user.is_patient}} </p>-->
+ {% if user.is_patient %}
+    <h2>welcome patient {{user.username }}</h2>
+  {% endif%}
+    {% for category, post in cat_post.items %}
+    <h3>{{category.name}}</h3>
+    <table class="table table-bordered table-striped mt-3">
+      <thead>
+          <tr>
+              <th>Title</th>
+              <th>Image</th>
+              <th>Summary</th>
+             
+             
+              
+          </tr>
+      </thead>
+  <tbody>
+    {% for i in post %}
+          <tr>
+              <td> {{i.Title}} </td>
+              <td> {% if i.Image %}
+                <p><strong>Image</strong></p><img src="{{ i.Image.url }}" alt="{{ i.title }}" width="50" height="50"> 
+              {% endif %}   </td>
+              
+              <td>{{ i.Summary|truncatewords:15 }}{% if i.Summary|length > 15 %}...{% endif %}</td>
+              
+
+
+          </tr>
+     {% endfor %}
+      </tbody>
+  </table>
+    {% endfor %}
 </div>
-{% endblock body%} 
+{% endblock body %} 

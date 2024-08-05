@@ -1,0 +1,20 @@
+
+
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container-fluid">
+   <div class="border-0">
+    <h2>Create Blog</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mt-5">
+         {% csrf_token %}
+         {{ form.as_p }}
+    
+         <button class="btn btn-primary" type="submit">submit</button>
+    
+        </div>
+     </form>
+   </div>
+</div>
+{% endblock body %}
